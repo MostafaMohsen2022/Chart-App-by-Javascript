@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+  <link rel="icon" type="image/x-icon" href="fav.png">
+  <title>عرض بيانات إحصائية رسومية</title>
+
+  <script src="chart.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #chart-container {
+      margin-top: 20px;
+    }
+
+    canvas {
+      max-width: 400px; /* قم بتعديل العرض حسب الحاجة */
+    }
+  </style>
+</head>
+<body>
+  <div style="text-align: center;">
+    <h1>اختر البيانات للعرض الإحصائي</h1>
+    <label for="selectColumn1">اختر العمود الأول:</label>
+    <select id="selectColumn1">
+      <option value="Column1">Column1</option>
+      <option value="Column2">Column2</option>
+      <option value="Column3">Column3</option>
+    </select>
+
+    <label for="selectColumn2">اختر العمود الثاني:</label>
+    <select id="selectColumn2">
+      <option value="Column1">Column1</option>
+      <option value="Column2">Column2</option>
+      <option value="Column3">Column3</option>
+    </select>
+
+    <label for="selectColumn3">اختر العمود الثالث:</label>
+    <select id="selectColumn3">
+      <option value="Column1">Column1</option>
+      <option value="Column2">Column2</option>
+      <option value="Column3">Column3</option>
+    </select>
+
+    <button onclick="displaySelectedData()">بحث</button>
+  </div>
+
+  <div id="chart-container">
+    <canvas id="chart"></canvas> <!-- الرسم البياني سيتم عرضه هنا -->
+  </div>
+
+  <script>
+    // دالة لقراءة ملف CSV ورسم البيانات الإحصائية
+    function displaySelectedData() {
+      var column1 = document.getElementById("selectColumn1").value;
+      var column2 = document.getElementById("selectColumn2").value;
+      var column3 = document.getElementById("selectColumn3").value;
+
+      var csvData = `Column1,Column2,Column3
+                     10,25,30
+                     20,30,40
+                     30,45,50
+                     40,55,60
+                     50,70,70`; // البيانات الإفتراضية بصيغة CSV
+
+      var rows = csvData.trim().split("\n");
+      var dataset = [];
+      var columnNames = rows[0].split(",");
+      for (var i = 1; i < rows.length; i++) {
+        var rowValues = rows[i].split(",");
+        var dataPoint = rowValues.map(parseFloat);
+        dataset.push(dataPoint);
+      }
+
+      // عرض البيانات الإحصائية بواسطة رسم بياني
+      var chartData = {
+        labels: columnNames,
+        datasets: [
+          {
+            label: columnNames[0],
+            data: dataset.map(row => row[0]),
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          },
+          {
+            label: columnNames[1],
+            data: dataset.map(row => row[1]),
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          },
+          {
+            label: columnNames[2],
+            data: dataset.map(row => row[2]),
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }
+        ]
+      };
+
+      var chartOptions = {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      };
+
+      // Create the chart using Chart.js
+      var ctx = document.getElementById('chart').getContext('2d');
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: chartOptions
+      });
+    }
+  </script>
+</body>
+</html>
